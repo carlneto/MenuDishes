@@ -35,16 +35,6 @@
 			path = MenuDishes;
 			sourceTree = "<group>";
 		};
-		AF89CE102C9E0E8A00828DB2 /* MenuDishesTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MenuDishesTests;
-			sourceTree = "<group>";
-		};
-		AF89CE1A2C9E0E8A00828DB2 /* MenuDishesUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MenuDishesUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				AF89CDFF2C9E0E8900828DB2 /* MenuDishes */,
-				AF89CE102C9E0E8A00828DB2 /* MenuDishesTests */,
-				AF89CE1A2C9E0E8A00828DB2 /* MenuDishesUITests */,
 				AF89CDFE2C9E0E8900828DB2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +118,6 @@
 			dependencies = (
 				AF89CE0F2C9E0E8A00828DB2 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				AF89CE102C9E0E8A00828DB2 /* MenuDishesTests */,
-			);
 			name = MenuDishesTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +137,6 @@
 			);
 			dependencies = (
 				AF89CE192C9E0E8A00828DB2 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AF89CE1A2C9E0E8A00828DB2 /* MenuDishesUITests */,
 			);
 			name = MenuDishesUITests;
 			packageProductDependencies = (

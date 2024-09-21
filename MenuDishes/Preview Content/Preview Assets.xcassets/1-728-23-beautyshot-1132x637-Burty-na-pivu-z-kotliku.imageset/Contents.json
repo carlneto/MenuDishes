@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "1-728-23-beautyshot-1132x637-Burty-na-pivu-z-kotliku.jpg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

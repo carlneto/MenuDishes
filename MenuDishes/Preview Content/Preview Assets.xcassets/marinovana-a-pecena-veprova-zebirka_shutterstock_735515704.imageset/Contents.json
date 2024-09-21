@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "marinovana-a-pecena-veprova-zebirka_shutterstock_735515704.jpg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
