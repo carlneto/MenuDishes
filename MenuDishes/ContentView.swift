@@ -203,7 +203,7 @@ let data: [Dish] = [
    Dish(
       name: "Ovocné knedlíky",
       description: "Bolinhos doces recheados com fruta, polvilhados com açúcar e manteiga.",
-      ingredients: ["Massa de batata", "Fruta (ameixa ou morango)", "Açúcar em pó", "Manteiga derretida"],
+      ingredients: ["Massa de batata", "Fruta (ameixa ou morango)", "Açúcar em pó", "Manteiga derretida", "Doce"],
       images: ["ovocne_knedliky_3833-reg"]
    ),
    Dish(
@@ -335,7 +335,55 @@ let data: [Dish] = [
    Dish(
       name: "Domácí jablečný štrúdl",
       description: "Strudel de maçã caseiro, uma sobremesa popular feita com massa folhada e recheio de maçã.",
-      ingredients: ["Massa folhada", "Maçãs", "Açúcar", "Canela", "Passas", "Nozes"],
+      ingredients: ["Massa folhada", "Maçãs", "Açúcar", "Canela", "Passas", "Nozes", "Doce"],
       images: ["38fe3986-c7fd-4514-822f-a99efbfbe7dc"]
+   ),
+   Dish(
+      name: "Trdelník",
+      description: "Massa de pão doce enrolada num cilindro, assada e coberta com açúcar e canela.",
+      ingredients: ["Massa de pão", "Açúcar", "Canela", "Nozes moídas", "Doce"],
+      images: ["trdlo"]
+   ),
+   Dish(
+      name: "Větrník",
+      description: "Doce feito de massa choux, recheado com creme de baunilha e caramelo, coberto com fondant de caramelo.",
+      ingredients: ["Massa choux", "Creme de baunilha", "Caramelo", "Fondant", "Doce"],
+      images: ["vetrnik"]
+   ),
+   Dish(
+      name: "Koláče",
+      description: "Pequenos bolos redondos de massa levedada, recheados com queijo fresco, frutas ou sementes de papoila.",
+      ingredients: ["Massa levedada", "Queijo fresco", "Frutas", "Sementes de papoila", "Doce"],
+      images: ["kolace"]
+   ),
+   Dish(
+      name: "Medovník",
+      description: "Bolo de mel em camadas, com creme e nozes, tradicionalmente envelhecido por vários dias.",
+      ingredients: ["Mel", "Farinha", "Nozes", "Creme", "Doce"],
+      images: ["medovnik"]
+   ),
+   Dish(
+      name: "Valašský frgál",
+      description: "Bolo grande e fino, típico da Morávia, coberto com recheios de frutas, queijo ou sementes de papoila.",
+      ingredients: ["Massa levedada", "Pêra", "Queijo", "Sementes de papoila", "Doce"],
+      images: ["frgal"]
+   ),
+   Dish(
+      name: "Kremrole",
+      description: "Rolinhos de massa folhada recheados com creme de merengue.",
+      ingredients: ["Massa folhada", "Claras de ovo", "Açúcar", "Doce"],
+      images: ["kremrole"]
+   ),
+   Dish(
+      name: "Rakvička",
+      description: "Pequenos 'caixões' de massa folhada recheados com creme de baunilha.",
+      ingredients: ["Massa folhada", "Creme de baunilha", "Açúcar em pó", "Doce"],
+      images: ["rakvicka"]
+   ),
+   Dish(
+      name: "Laskonka",
+      description: "Dois discos de merengue com nozes, unidos por creme de manteiga.",
+      ingredients: ["Claras de ovo", "Nozes", "Creme de manteiga", "Doce"],
+      images: ["laskonka"]
    ),
 ]
