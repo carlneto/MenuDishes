@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 struct ContentView: View {
    @State private var searchText = ""
@@ -38,6 +39,73 @@ struct ContentView: View {
          .navigationTitle("Ementa")
          .searchable(text: $searchText, prompt: "Pesquisar por nome ou ingredientes")
       }
+      .onAppear {
+         print(htmlStr(from: data, title: "Pratos Típicos", appName: "MenuDishes"))
+      }
+   }
+   func htmlStr(from data: [Dish], title: String, appName: String) -> String {
+      let dishes = data.sorted { $0.name < $1.name }
+      let style = """
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+            img { max-width: 100%; height: auto; display: block; margin: 0 auto 10px; border-radius: 8px; }
+            h2 { color: #333; margin-top: 20px; }
+            p { margin-bottom: 10px; }
+            a { color: #007bff; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            .container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+            .info { flex: 1 1 60%; }
+            .image { flex: 1 1 35%; }
+            ul { padding-left: 20px; }
+            li { margin-bottom: 5px; }
+        </style>
+    """
+      
+      let htmlContent = dishes.map { dish in
+         let ingredients = dish.ingredients.map { "<li>\(escapeHTML($0))</li>" }.joined()
+         let imgName = dish.images.first ?? "placeholder"
+         return """
+            <div class="container">
+                <div class="info">
+                    <h2>\(escapeHTML(dish.name))</h2>
+                    <p>\(escapeHTML(dish.description))</p>
+                    <h3>Ingredientes:</h3>
+                    <ul>\(ingredients)</ul>
+                </div>
+                <div class="image">
+                    <img src="MenuDishes/\(imgName).jpg" alt="\(escapeHTML(dish.name))" width="250">
+                </div>
+            </div>
+        """
+      }.joined()
+      
+      let html = """
+        <!DOCTYPE html>
+        <html lang="pt">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="author" content="\(escapeHTML(appName))">
+            <title>\(escapeHTML(appName)) - \(escapeHTML(title))</title>
+            \(style)
+        </head>
+        <body>
+            <h1>\(escapeHTML(title))</h1>
+            \(htmlContent)
+        </body>
+        </html>
+    """
+      
+      print("\n\n\n\n<!-- Guardar como MenuDishes.html: para gerar MenuDishes.pdf -->\n\(html)")
+      return html
+   }
+   func escapeHTML(_ string: String) -> String {
+      return string
+         .replacingOccurrences(of: "&", with: "&amp;")
+         .replacingOccurrences(of: "<", with: "&lt;")
+         .replacingOccurrences(of: ">", with: "&gt;")
+         .replacingOccurrences(of: "\"", with: "&quot;")
+         .replacingOccurrences(of: "'", with: "&#39;")
    }
 }
 
@@ -56,6 +124,7 @@ extension String {
 
 struct DishDetailView: View {
    var dish: Dish
+   let synthesizer = AVSpeechSynthesizer()
    
    var body: some View {
       ScrollView {
@@ -68,24 +137,46 @@ struct DishDetailView: View {
                   .cornerRadius(10)
                   .padding(.bottom, 10)
             }
-            
+            Button(action: {
+               let impact = UIImpactFeedbackGenerator(style: .medium)
+               impact.impactOccurred()
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                  self.speakDishName()
+               }
+            }) {
+               Image(systemName: "speaker.wave.3.fill")
+                  .font(.system(size: 20))
+                  .foregroundColor(.blue)
+                  .padding()
+                  .background(Color(.systemGray6))
+                  .cornerRadius(10)
+            }
+            Spacer()
             Text(dish.description)
                .font(.body)
                .padding(.bottom, 10)
-            
             Text("Ingredientes")
                .font(.headline)
-            
             ForEach(dish.ingredients, id: \.self) { ingredient in
                Text(ingredient)
                   .padding(.leading, 10)
             }
-            
-            Spacer()
          }
          .padding()
       }
       .navigationTitle(dish.name)
+   }
+   
+   func speakDishName() {
+      do {
+         try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.duckOthers])
+         try AVAudioSession.sharedInstance().setActive(true)
+      } catch {
+         print("Erro ao configurar o AVAudioSession: \(error.localizedDescription)")
+      }
+      let utterance = AVSpeechUtterance(string: dish.name)
+      utterance.voice = AVSpeechSynthesisVoice(language: "cs-CZ")
+      synthesizer.speak(utterance)
    }
 }
 
@@ -107,7 +198,7 @@ let data: [Dish] = [
    Dish(
       name: "Svíčková na smetaně",
       description: "Lombo de vaca em molho de natas com cenoura, servido com knedlíky.",
-      ingredients: ["Lombo de vaca", "Natas", "Cenoura", "Aipo", "Salsa", "Knedlíky"],
+      ingredients: ["Lombo de vaca", "Natas", "Cenoura", "Aipo", "Salsa", "Knedlíky", "Carne"],
       images: ["Svickova-na-smetane"]
    ),
    Dish(
@@ -143,13 +234,13 @@ let data: [Dish] = [
    Dish(
       name: "Smažený kapr",
       description: "Carpa frita, prato tradicional de Natal na República Checa.",
-      ingredients: ["Carpa", "Farinha", "Ovo", "Pão ralado", "Limão", "Sal"],
+      ingredients: ["Carpa", "Farinha", "Ovo", "Pão ralado", "Limão", "Sal", "Peixe"],
       images: ["ccae30a0a2391b85094a686ebd998eee"]
    ),
    Dish(
       name: "Koleno",
       description: "Joelho de porco assado, servido com rábano picante e mostarda.",
-      ingredients: ["Joelho de porco", "Alho", "Cominho", "Cerveja", "Rábano picante", "Mostarda"],
+      ingredients: ["Joelho de porco", "Alho", "Cominho", "Cerveja", "Rábano picante", "Mostarda", "Carne"],
       images: ["koleno"]
    ),
    Dish(
@@ -191,7 +282,7 @@ let data: [Dish] = [
    Dish(
       name: "Utopenci",
       description: "Salsichas marinadas em vinagre com cebola e pimentão.",
-      ingredients: ["Salsichas", "Cebola", "Pimentão", "Vinagre", "Pimenta", "Louro"],
+      ingredients: ["Salsichas", "Cebola", "Pimentão", "Vinagre", "Pimenta", "Louro", "Carne"],
       images: ["h389w574t"]
    ),
    Dish(
@@ -233,7 +324,7 @@ let data: [Dish] = [
    Dish(
       name: "Svíčková na smetaně",
       description: "Lombo de vaca em molho cremoso de legumes, servido com knedlíky.",
-      ingredients: ["Lombo de vaca", "Cenoura", "Aipo", "Salsa", "Natas", "Knedlíky"],
+      ingredients: ["Lombo de vaca", "Cenoura", "Aipo", "Salsa", "Natas", "Knedlíky", "Carne"],
       images: ["svickova_na_smetane"]
    ),
    Dish(
@@ -251,7 +342,7 @@ let data: [Dish] = [
    Dish(
       name: "Buřty na pivu",
       description: "Salsichas cozidas em cerveja com cebola e pimentão.",
-      ingredients: ["Salsichas", "Cerveja", "Cebola", "Pimentão", "Pimenta", "Mostarda"],
+      ingredients: ["Salsichas", "Cerveja", "Cebola", "Pimentão", "Pimenta", "Mostarda", "Carne"],
       images: ["1-728-23-beautyshot-1132x637-Burty-na-pivu-z-kotliku"]
    ),
    Dish(
@@ -275,7 +366,7 @@ let data: [Dish] = [
    Dish(
       name: "Zabijačkový guláš",
       description: "Gulache feito com miudezas de porco, servido durante a matança do porco.",
-      ingredients: ["Miudezas de porco", "Cebola", "Alho", "Páprica", "Pimentão", "Cominho"],
+      ingredients: ["Miudezas de porco", "Cebola", "Alho", "Páprica", "Pimentão", "Cominho", "Carne"],
       images: ["4F0BB120-B199-4751-BA06-C1C7FECC89AB"]
    ),
    Dish(
@@ -293,19 +384,19 @@ let data: [Dish] = [
    Dish(
       name: "Drštková polévka",
       description: "Sopa de tripas picante, popular como cura para a ressaca.",
-      ingredients: ["Tripas", "Batata", "Cebola", "Alho", "Páprica", "Manjerona"],
+      ingredients: ["Tripas", "Batata", "Cebola", "Alho", "Páprica", "Manjerona", "Carne"],
       images: ["6fe118c90f22001ab05480d24ad322b2-facebook"]
    ),
    Dish(
       name: "Telecí řízek",
       description: "Escalope de vitela panado, servido com salada de batata.",
-      ingredients: ["Vitela", "Ovo", "Farinha", "Pão ralado", "Óleo", "Limão"],
+      ingredients: ["Vitela", "Ovo", "Farinha", "Pão ralado", "Óleo", "Limão", "Carne"],
       images: ["Escalopes-de-vitela-panados"]
    ),
    Dish(
       name: "Pečená kachna",
       description: "Pato assado, geralmente servido com knedlíky e couve roxa.",
-      ingredients: ["Pato", "Maçã", "Cebola", "Alho", "Manjerona", "Cominho"],
+      ingredients: ["Pato", "Maçã", "Cebola", "Alho", "Manjerona", "Cominho", "Carne"],
       images: ["peccc8cenacc81-kachna-knedlicky-and-red-cabbage-1"]
    ),
    Dish(
@@ -329,7 +420,7 @@ let data: [Dish] = [
    Dish(
       name: "Vepřová žebra",
       description: "Costeletas de porco assadas, muitas vezes marinadas em cerveja e especiarias.",
-      ingredients: ["Costeletas de porco", "Cerveja", "Mel", "Alho", "Páprica", "Mostarda"],
+      ingredients: ["Costeletas de porco", "Cerveja", "Mel", "Alho", "Páprica", "Mostarda", "Carne"],
       images: ["marinovana-a-pecena-veprova-zebirka_shutterstock_735515704"]
    ),
    Dish(
@@ -385,5 +476,17 @@ let data: [Dish] = [
       description: "Dois discos de merengue com nozes, unidos por creme de manteiga.",
       ingredients: ["Claras de ovo", "Nozes", "Creme de manteiga", "Doce"],
       images: ["laskonka"]
+   ),
+   Dish(
+      name: "Pstruh na másle",
+      description: "Truta grelhada na manteiga, muitas vezes servida com batatas e legumes.",
+      ingredients: ["Truta", "Manteiga", "Alho", "Limão", "Ervas", "Peixe"],
+      images: ["pstruhnamasle"]
+   ),
+   Dish(
+      name: "Rybi polévka",
+      description: "Sopa de peixe, tradicionalmente preparada com carpa, cebola, alho e especiarias, servida principalmente no Natal.",
+      ingredients: ["Carpa", "Cebola", "Alho", "Cenoura", "Especiarias"],
+      images: ["rybipolevka"]
    ),
 ]
