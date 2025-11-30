@@ -29,7 +29,7 @@ MenuDishes is a SwiftUI-based iOS app that allows users to:
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/MenuDishes.git
-````
+   ```
 
 2. Open the project in Xcode:
 
